@@ -10,7 +10,7 @@ export function useFetchAPI() {
   // Configuration pour le développement avec fallback
   const getApiUrl = () => {
     // En développement, utiliser une URL par défaut si pas configurée
-    if (process.dev) {
+    if (import.meta.dev) {
       return config.public?.apiBase || 'http://localhost:8000/api'
     }
     // En production, exiger la configuration
@@ -38,12 +38,12 @@ export function useFetchAPI() {
       const url = endpoint.startsWith('http') ? endpoint : buildUrl(endpoint)
       
       // En développement, log des requêtes pour debug
-      if (process.dev) {
+      if (import.meta.dev) {
         console.log(`🔄 API Request: ${options.method || 'GET'} ${url}`)
       }
 
       // Gestion du token côté client uniquement
-      const token = import.meta.client ? localStorage.getItem('token') : null
+      const token = import.meta.client ? localStorage.getItem('accessToken') : null
 
       // Copie les headers de l'utilisateur
       const headers = { ...options.headers }
@@ -64,7 +64,7 @@ export function useFetchAPI() {
       })
 
       // En développement, log des réponses
-      if (process.dev) {
+      if (import.meta.dev) {
         console.log(`✅ API Response: ${response.status} ${response.statusText}`)
         if (!response.ok) {
           console.error(`❌ API Error: ${response.status} ${response.statusText}`)
@@ -78,7 +78,7 @@ export function useFetchAPI() {
       loading.value = false
       
       // En développement, log détaillé des erreurs
-      if (process.dev) {
+      if (import.meta.dev) {
         console.error('❌ API Request Failed:', err)
       }
       
@@ -113,7 +113,7 @@ export function useFetchAPI() {
   urlBuilder.error = error
 
   // Utilitaire pour debug en développement
-  if (process.dev) {
+  if (import.meta.dev) {
     urlBuilder.getApiUrl = getApiUrl
   }
 
