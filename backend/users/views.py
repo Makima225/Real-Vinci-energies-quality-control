@@ -153,6 +153,11 @@ class RoleUserListView(generics.ListAPIView):
     serializer_class = RoleUserSerializer
 
     def get(self, request):
-        # Récupérer la liste des rôles des utilisateurs
-        roles = User.ROLE_CHOICES
-        return Response(roles)
+         # Transformer les ROLE_CHOICES en format attendu par le serializer
+        roles_data = [
+            {'id': role[0], 'name': role[1]} 
+            for role in User.ROLE_CHOICES
+        ]
+        serializer = self.get_serializer(roles_data, many=True)
+        return Response(serializer.data) 
+       

@@ -28,8 +28,8 @@ export function useUserManagement() {
       
       // Transformer les données pour le select
       roles.value = data.map(role => ({
-        value: role.name || role.value || role,
-        label: role.display_name || role.label || role.name || role
+        value: role.id || role.value || role,
+        label: role.name || role.label || role
       }))
       
       if (import.meta.dev) {
