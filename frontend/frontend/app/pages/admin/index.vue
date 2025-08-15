@@ -51,65 +51,153 @@
         />
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Utilisateurs récents -->
-        <DashboardCard 
-          title="Utilisateurs récents" 
-          subtitle="Dernières inscriptions"
-          action-text="Voir tous"
-          @action="navigateTo('/admin/users')"
-        >
-          <DataTable
-            title=""
-            :headers="userHeaders"
-            :data="recentUsers"
-            :show-actions="false"
-            empty-message="Aucun utilisateur récent"
-          >
-            <template #role="{ value }">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize"
-                    :class="getRoleColor(value)">
-                {{ value }}
-              </span>
-            </template>
-            
-            <template #is_active="{ value }">
-              <span class="inline-flex items-center">
-                <div class="w-2 h-2 rounded-full mr-2" 
-                     :class="value ? 'bg-green-400' : 'bg-red-400'"></div>
-                {{ value ? 'Actif' : 'Inactif' }}
-              </span>
-            </template>
-          </DataTable>
-        </DashboardCard>
+      <!-- Messages pour les projets -->
+      <div v-if="projectSuccess" class="mb-6 bg-green-50 border border-green-200 rounded-md p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-green-800">{{ projectSuccess }}</p>
+          </div>
+          <div class="ml-auto pl-3">
+            <div class="-mx-1.5 -my-1.5">
+              <button @click="clearMessages" type="button" class="inline-flex bg-green-50 rounded-md p-1.5 text-green-500 hover:bg-green-100 focus:outline-none">
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <!-- Activité récente -->
-        <DashboardCard 
-          title="Activité récente" 
-          subtitle="Dernières actions"
-        >
-          <div class="space-y-4">
-            <div v-for="activity in recentActivity" :key="activity.id" 
-                 class="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50">
-              <div class="flex-shrink-0">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center"
-                     :class="getActivityIcon(activity.type).bg">
-                  <svg class="w-4 h-4" :class="getActivityIcon(activity.type).color" 
-                       fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          :d="getActivityIcon(activity.type).path"></path>
-                  </svg>
+      <div v-if="projectError" class="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-red-800">{{ projectError }}</p>
+          </div>
+          <div class="ml-auto pl-3">
+            <div class="-mx-1.5 -my-1.5">
+              <button @click="clearMessages" type="button" class="inline-flex bg-red-50 rounded-md p-1.5 text-red-500 hover:bg-red-100 focus:outline-none">
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projets -->
+      <DashboardCard 
+        title="Projets" 
+        subtitle="Liste des projets"
+        class="mb-8"
+      >
+        <!-- Loading state -->
+        <div v-if="projectsLoading" class="flex items-center justify-center py-8">
+          <svg class="animate-spin h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span class="ml-2 text-gray-600">Chargement des projets...</span>
+        </div>
+
+        <!-- Empty state -->
+        <div v-else-if="projects.length === 0" class="text-center py-8">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun projet</h3>
+          <p class="mt-1 text-sm text-gray-500">Commencez par créer votre premier projet.</p>
+        </div>
+
+        <!-- Projects grid -->
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div 
+            v-for="project in projects" 
+            :key="project.id"
+            @click="handleProjectClick(project)"
+            class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer relative group"
+          >
+            <!-- Actions icons -->
+            <div class="absolute top-3 right-3 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button 
+                @click.stop="handleEditProject(project)"
+                class="p-1 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
+                title="Modifier"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+              </button>
+              <button 
+                @click.stop="handleDeleteProject(project)"
+                class="p-1 rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
+                title="Supprimer"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Project content -->
+            <div class="pr-16">
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ project.titre }}</h3>
+              
+              <div class="space-y-2 text-sm">
+                <div class="flex">
+                  <span class="font-medium text-gray-600 w-24">Client:</span>
+                  <span class="text-gray-900">{{ project.client }}</span>
                 </div>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900">{{ activity.action }}</p>
-                <p class="text-sm text-gray-500">{{ activity.description }}</p>
-                <p class="text-xs text-gray-400 mt-1">{{ formatTime(activity.timestamp) }}</p>
+                
+                <div class="flex">
+                  <span class="font-medium text-gray-600 w-24">Lieu:</span>
+                  <span class="text-gray-900">{{ project.Emplacement }}</span>
+                </div>
+                
+                <div class="flex">
+                  <span class="font-medium text-gray-600 w-24">Référence:</span>
+                  <span class="text-gray-900">{{ project.Reference_affaire }}</span>
+                </div>
+                
+                <div class="flex">
+                  <span class="font-medium text-gray-600 w-24">Coordinateur:</span>
+                  <span v-if="project.coordonnateur_details" class="text-gray-900">
+                    {{ project.coordonnateur_details.name }} {{ project.coordonnateur_details.surname }}
+                  </span>
+                  <span v-else class="text-gray-500 italic">Non assigné</span>
+                </div>
               </div>
             </div>
           </div>
-        </DashboardCard>
-      </div>
+        </div>
+      </DashboardCard>
+
+      <!-- Modal de modification de projet -->
+      <ProjectEditModal
+        :is-open="isEditModalOpen"
+        :project="selectedProject"
+        @close="closeEditModal"
+        @updated="handleProjectUpdated"
+      />
+
+      <!-- Modal de suppression de projet -->
+      <ProjectDeleteModal
+        :is-open="isDeleteModalOpen"
+        :project="selectedProject"
+        @close="closeDeleteModal"
+        @deleted="handleProjectDeleted"
+      />
 
       <!-- Actions rapides -->
       <DashboardCard 
@@ -146,6 +234,10 @@
 </template>
 
 <script setup>
+import { useProjectManagement } from '~/composables/useProjectManagement'
+import ProjectEditModal from '~/components/ProjectEditModal.vue'
+import ProjectDeleteModal from '~/components/ProjectDeleteModal.vue'
+
 // Middleware d'authentification pour les admins
 definePageMeta({
   middleware: 'auth'
@@ -157,6 +249,24 @@ useHead({
 })
 
 const authStore = useAuthStore()
+
+// Composable pour la gestion des projets
+const {
+  projects,
+  projectsLoading,
+  error: projectError,
+  success: projectSuccess,
+  fetchProjects,
+  deleteProject,
+  clearMessages
+} = useProjectManagement()
+
+// État pour le modal de modification
+const isEditModalOpen = ref(false)
+const selectedProject = ref(null)
+
+// État pour le modal de suppression
+const isDeleteModalOpen = ref(false)
 
 // Données simulées (à remplacer par de vrais appels API)
 const stats = ref({
@@ -199,29 +309,45 @@ const recentUsers = ref([
   }
 ])
 
-const recentActivity = ref([
-  {
-    id: 1,
-    type: 'user',
-    action: 'Nouvel utilisateur',
-    description: 'Marie Dubois a rejoint l\'équipe',
-    timestamp: new Date(Date.now() - 1000 * 60 * 30) // 30 minutes ago
-  },
-  {
-    id: 2,
-    type: 'project',
-    action: 'Projet terminé',
-    description: 'Installation électrique Batiment A',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2) // 2 hours ago
-  },
-  {
-    id: 3,
-    type: 'quality',
-    action: 'Contrôle qualité',
-    description: 'Validation conformité NF C 15-100',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4) // 4 hours ago
-  }
-])
+// Handlers pour les actions sur les projets
+const handleProjectClick = (project) => {
+  // Rediriger vers la page de détails du projet (à créer plus tard si besoin)
+  console.log('Clic sur le projet:', project.titre)
+  // navigateTo(`/admin/projects/${project.id}`)
+}
+
+const handleEditProject = (project) => {
+  // Ouvrir le modal de modification
+  selectedProject.value = project
+  isEditModalOpen.value = true
+}
+
+const closeEditModal = () => {
+  isEditModalOpen.value = false
+  selectedProject.value = null
+}
+
+const handleProjectUpdated = (updatedProject) => {
+  // Le projet a été mis à jour, la liste sera rechargée automatiquement
+  console.log('Projet mis à jour:', updatedProject.titre)
+}
+
+const closeDeleteModal = () => {
+  isDeleteModalOpen.value = false
+  selectedProject.value = null
+}
+
+const handleProjectDeleted = async (deletedProject) => {
+  // Le projet a été supprimé, recharger la liste
+  console.log('Projet supprimé:', deletedProject.titre)
+  await fetchProjects()
+}
+
+const handleDeleteProject = async (project) => {
+  // Ouvrir le modal de confirmation de suppression
+  selectedProject.value = project
+  isDeleteModalOpen.value = true
+}
 
 const quickActions = [
   {
@@ -231,6 +357,14 @@ const quickActions = [
     iconBg: 'bg-blue-100',
     iconColor: 'text-blue-600',
     iconPath: 'M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z'
+  },
+  {
+    name: 'Créer un projet',
+    description: 'Ajouter un nouveau projet',
+    route: '/admin/create-project',
+    iconBg: 'bg-emerald-100',
+    iconColor: 'text-emerald-600',
+    iconPath: 'M12 10.5v6m3-3H9m4.06-7.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z'
   },
   {
     name: 'Gérer les utilisateurs',
@@ -279,43 +413,11 @@ const getRoleColor = (role) => {
   return colors[role] || 'bg-gray-100 text-gray-800'
 }
 
-const getActivityIcon = (type) => {
-  const icons = {
-    user: {
-      bg: 'bg-blue-100',
-      color: 'text-blue-600',
-      path: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
-    },
-    project: {
-      bg: 'bg-green-100',
-      color: 'text-green-600',
-      path: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z'
-    },
-    quality: {
-      bg: 'bg-orange-100',
-      color: 'text-orange-600',
-      path: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
-    }
-  }
-  return icons[type] || icons.user
-}
-
-const formatTime = (date) => {
-  const now = new Date()
-  const diff = now - date
-  const minutes = Math.floor(diff / (1000 * 60))
-  const hours = Math.floor(diff / (1000 * 60 * 60))
-  
-  if (minutes < 60) {
-    return `Il y a ${minutes} minute${minutes > 1 ? 's' : ''}`
-  } else {
-    return `Il y a ${hours} heure${hours > 1 ? 's' : ''}`
-  }
-}
-
 // Charger les données au montage
 onMounted(async () => {
-  // Ici vous pouvez charger les vraies données depuis votre API
+  // Charger les projets
+  await fetchProjects()
+  
   if (import.meta.dev) {
     console.log('🏠 Page admin chargée pour:', authStore.fullName)
   }

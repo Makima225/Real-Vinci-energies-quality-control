@@ -17,19 +17,6 @@
           </div>
         </div>
 
-        <!-- Navigation principale -->
-        <nav class="hidden md:flex space-x-8">
-          <NuxtLink 
-            v-for="item in navigationItems" 
-            :key="item.path"
-            :to="item.path"
-            class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-            active-class="text-blue-600 bg-blue-50"
-          >
-            {{ item.name }}
-          </NuxtLink>
-        </nav>
-
         <!-- Actions utilisateur -->
         <div class="flex items-center space-x-4">
           <!-- Notifications -->
@@ -79,32 +66,6 @@
               </button>
             </div>
           </div>
-
-          <!-- Menu mobile -->
-          <button 
-            @click="showMobileMenu = !showMobileMenu"
-            class="md:hidden p-2 text-gray-400 hover:text-gray-600"
-          >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Navigation mobile -->
-      <div v-if="showMobileMenu" class="md:hidden border-t border-gray-200 py-4">
-        <div class="space-y-1">
-          <NuxtLink 
-            v-for="item in navigationItems" 
-            :key="item.path"
-            :to="item.path"
-            class="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-md"
-            active-class="text-blue-600 bg-blue-50"
-            @click="showMobileMenu = false"
-          >
-            {{ item.name }}
-          </NuxtLink>
         </div>
       </div>
     </div>
@@ -112,72 +73,13 @@
 </template>
 
 <script setup>
-const route = useRoute()
 const authStore = useAuthStore()
 const showUserMenu = ref(false)
-const showMobileMenu = ref(false)
 
 // Données utilisateur
 const userInitials = computed(() => authStore.initials)
 const userFullName = computed(() => authStore.fullName)
 const userRole = computed(() => authStore.user?.role || '')
-
-// Navigation selon le rôle
-const navigationItems = computed(() => {
-  const role = userRole.value
-  const baseItems = []
-
-  switch (role) {
-    case 'admin':
-      return [
-        { name: 'Tableau de bord', path: '/admin' },
-        { name: 'Utilisateurs', path: '/admin/users' },
-        { name: 'Projets', path: '/admin/projects' },
-        { name: 'Rapports', path: '/admin/reports' },
-        { name: 'Paramètres', path: '/admin/settings' }
-      ]
-    
-    case 'directeur':
-      return [
-        { name: 'Tableau de bord', path: '/directeur' },
-        { name: 'Vue d\'ensemble', path: '/directeur/overview' },
-        { name: 'Équipes', path: '/directeur/teams' },
-        { name: 'Performance', path: '/directeur/performance' }
-      ]
-    
-    case 'chef de projet':
-      return [
-        { name: 'Mes Projets', path: '/chef-projet' },
-        { name: 'Planning', path: '/chef-projet/planning' },
-        { name: 'Équipe', path: '/chef-projet/team' },
-        { name: 'Ressources', path: '/chef-projet/resources' }
-      ]
-    
-    case 'coordonnateur':
-      return [
-        { name: 'Coordination', path: '/coordonnateur' },
-        { name: 'Affectations', path: '/coordonnateur/assignments' },
-        { name: 'Suivi', path: '/coordonnateur/tracking' }
-      ]
-    
-    case 'ingenieur travaux':
-      return [
-        { name: 'Mes Travaux', path: '/ingenieur-travaux' },
-        { name: 'Chantiers', path: '/ingenieur-travaux/sites' },
-        { name: 'Contrôles', path: '/ingenieur-travaux/controls' }
-      ]
-    
-    case 'qualiticient':
-      return [
-        { name: 'Contrôles', path: '/qualiticient' },
-        { name: 'Inspections', path: '/qualiticient/inspections' },
-        { name: 'Rapports', path: '/qualiticient/reports' }
-      ]
-    
-    default:
-      return []
-  }
-})
 
 // Titre de l'espace actuel
 const getCurrentSpaceTitle = () => {
@@ -198,14 +100,11 @@ const handleLogout = async () => {
   await authStore.logout()
 }
 
-// Fermer les menus si on clique ailleurs
+// Fermer le menu utilisateur si on clique ailleurs
 onMounted(() => {
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.relative')) {
       showUserMenu.value = false
-    }
-    if (!e.target.closest('.md\\:hidden')) {
-      showMobileMenu.value = false
     }
   })
 })
