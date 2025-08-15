@@ -36,3 +36,62 @@ class ProjetSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("L'utilisateur doit avoir le rôle 'coordonnateur'.")
         return value
 
+
+class UserChefProjetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "name", "surname", "role")
+
+
+class UserIngenieurTravauxSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "name", "surname", "role")
+
+
+class SousProjetSerializer(serializers.ModelSerializer):
+    # écriture : on attend les PK filtrés par rôle
+    projet = serializers.PrimaryKeyRelatedField(queryset=Projet.objects.all())
+    chef_projet = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.filter(role='chef de projet'),
+        required=False,
+        allow_null=True
+    )
+    ingenieur_travaux = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.filter(role='ingenieur travaux'),
+        required=False,
+        allow_null=True
+    )
+
+    # lecture : détails imbriqués
+    projet_details = serializers.SerializerMethodField(read_only=True)
+    chef_projet_details = UserChefProjetSerializer(source='chef_projet', read_only=True)
+    ingenieur_travaux_details = UserIngenieurTravauxSerializer(source='ingenieur_travaux', read_only=True)
+
+    class Meta:
+        model = SousProjet
+        fields = (
+            "id",
+            "titre",
+            "projet",
+            "projet_details",
+            "chef_projet",
+            "chef_projet_details",
+            "ingenieur_travaux",
+            "ingenieur_travaux_details",
+        )
+
+    def get_projet_details(self, obj):
+        # évite import circulaire ou surcharge si ProjetSerializer est lourd
+        return {"id": obj.projet.id, "titre": obj.projet.titre} if obj.projet else None
+
+    def validate_chef_projet(self, value):
+        if value and value.role != 'chef de projet':
+            raise serializers.ValidationError("L'utilisateur doit avoir le rôle 'chef de projet'.")
+        return value
+
+    def validate_ingenieur_travaux(self, value):
+        if value and value.role != 'ingenieur travaux':
+            raise serializers.ValidationError("L'utilisateur doit avoir le rôle 'ingenieur travaux'.")
+        return value
+

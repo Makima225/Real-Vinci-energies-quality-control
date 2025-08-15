@@ -311,9 +311,8 @@ const recentUsers = ref([
 
 // Handlers pour les actions sur les projets
 const handleProjectClick = (project) => {
-  // Rediriger vers la page de détails du projet (à créer plus tard si besoin)
-  console.log('Clic sur le projet:', project.titre)
-  // navigateTo(`/admin/projects/${project.id}`)
+  // Rediriger vers la page de détails du projet
+  navigateTo(`/admin/projets/${project.id}`)
 }
 
 const handleEditProject = (project) => {

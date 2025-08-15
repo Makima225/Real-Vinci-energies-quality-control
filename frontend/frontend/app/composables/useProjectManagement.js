@@ -147,6 +147,44 @@ export function useProjectManagement() {
   // État pour les projets
   const projects = ref([])
   const projectsLoading = ref(false)
+  
+  // État pour un projet spécifique
+  const currentProject = ref(null)
+  const projectLoading = ref(false)
+
+  // Récupérer les détails d'un projet
+  const fetchProject = async (projectId) => {
+    projectLoading.value = true
+    error.value = ''
+    currentProject.value = null
+    
+    try {
+      const response = await api.get(`projects/detail/${projectId}/`)
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Projet introuvable')
+        }
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`)
+      }
+      
+      const data = await response.json()
+      currentProject.value = data
+      
+      if (import.meta.dev) {
+        console.log('🟢 Projet récupéré:', data)
+      }
+
+      return { success: true, project: data }
+
+    } catch (err) {
+      console.error('❌ Erreur lors de la récupération du projet:', err)
+      error.value = err.message || 'Erreur lors de la récupération du projet'
+      return { success: false, error: err.message }
+    } finally {
+      projectLoading.value = false
+    }
+  }
 
   // Récupérer la liste des projets
   const fetchProjects = async () => {
@@ -288,9 +326,12 @@ export function useProjectManagement() {
     coordonnateurLoading: computed(() => coordonnateurLoading.value),
     projects: computed(() => projects.value),
     projectsLoading: computed(() => projectsLoading.value),
+    currentProject: computed(() => currentProject.value),
+    projectLoading: computed(() => projectLoading.value),
 
     // Méthodes
     fetchCoordonnateurs,
+    fetchProject,
     fetchProjects,
     createProject,
     updateProject,

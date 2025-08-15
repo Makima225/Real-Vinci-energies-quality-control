@@ -1,6 +1,6 @@
 from django.urls import path
 from users.views import UserCreateView, UserDetailView, RoleUserListView, UserListView, UserCreateByAdminView, ChangePasswordView, CustomTokenObtainPairView,AddPictureView, UserDetailRoleView
-from core.views import ProjetCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView      
+from core.views import ProjetCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView, SousProjetCreateView, SousProjetListView, SousProjetDetailView, SousProjetUpdateView, SousProjetDeleteView      
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -22,11 +22,21 @@ urlpatterns = [
 
 
     # Core API URLs
+
+    # Project URLs
     path('projects/create/', ProjetCreateView.as_view(), name='project-create'),
     path('projects/list/', ProjectListView.as_view(), name='project-list'),
     path('projects/detail/<int:pk>/', ProjectDetailView.as_view(), name='project-detail'),
     path('projects/update/<int:pk>/', ProjectUpdateView.as_view(), name='project-update'),
     path('projects/delete/<int:pk>/', ProjectDeleteView.as_view(), name='project-delete'),
+
+
+    # Sous-Project URLs
+    path('sous-projects/create/', SousProjetCreateView.as_view(), name='sous-project-create'),
+    path('sous-projects/list/', SousProjetListView.as_view(), name='sous-project-list'),
+    path('sous-projects/detail/<int:pk>/', SousProjetDetailView.as_view(), name='sous-project-detail'),
+    path('sous-projects/update/<int:pk>/', SousProjetUpdateView.as_view(), name='sous-project-update'),
+    path('sous-projects/delete/<int:pk>/', SousProjetDeleteView.as_view(), name='sous-project-delete'),
 
     
 ]
