@@ -273,6 +273,7 @@
               <div 
                 v-for="sousProjet in sousProjets" 
                 :key="sousProjet.id"
+                @click="handleSousProjetClick(sousProjet)"
                 class="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer relative group"
               >
                 <!-- Actions icons -->
@@ -509,6 +510,16 @@ const handleSousProjetCreated = (sousProjet) => {
   console.log('Sous-projet créé:', sousProjet.titre)
   // Recharger la liste des sous-projets après création
   loadSousProjets()
+}
+
+// Handler pour le clic sur une carte de sous-projet
+const handleSousProjetClick = (sousProjet) => {
+  // Naviguer vers la page de détails du sous-projet
+  navigateTo(`/admin/subprojects/${sousProjet.id}`)
+  
+  if (import.meta.dev) {
+    console.log('🔗 Navigation vers sous-projet:', sousProjet.titre)
+  }
 }
 
 // Handlers pour les actions sur les sous-projets
