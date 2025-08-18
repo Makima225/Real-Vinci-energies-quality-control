@@ -1,0 +1,203 @@
+{
+  "project": {
+    "name": "Quality Controle Frontend",
+    "framework": "Nuxt 4",
+    "language": "Vue 3 + JavaScript",
+    "styling": "TailwindCSS",
+    "stateManagement": "Pinia",
+    "architecture": "Composition API"
+  },
+  "fileStructure": {
+    "components": "~/components/",
+    "composables": "~/composables/",
+    "stores": "~/stores/",
+    "pages": "~/pages/",
+    "layouts": "~/layouts/",
+    "middleware": "~/middleware/",
+    "plugins": "~/plugins/"
+  },
+  "namingConventions": {
+    "files": {
+      "components": "PascalCase (ex: ProjectEditModal.vue)",
+      "composables": "camelCase with 'use' prefix (ex: useProjectManagement.js)",
+      "stores": "camelCase with 'Store' suffix (ex: authStore.js)",
+      "pages": "kebab-case or [param] for dynamic routes",
+      "middleware": "kebab-case (ex: auth.js)"
+    },
+    "variables": {
+      "reactive": "camelCase (ex: isLoading, currentProject)",
+      "constants": "UPPER_SNAKE_CASE (ex: API_BASE_URL)",
+      "functions": "camelCase (ex: fetchProject, handleSubmit)"
+    }
+  },
+  "codeStructure": {
+    "components": {
+      "template": "Toujours en premier",
+      "script": "En second avec setup",
+      "style": "En dernier avec scoped si nécessaire",
+      "imports": "Ordre: Vue/Nuxt, composables, components, autres"
+    },
+    "composables": {
+      "structure": [
+        "Imports (Vue, autres composables)",
+        "État réactif (ref, reactive)",
+        "Fonctions métier",
+        "Return object avec computed et méthodes"
+      ],
+      "naming": "Toujours préfixer par 'use'",
+      "exports": "Exporter une fonction nommée"
+    }
+  },
+  "apiIntegration": {
+    "composable": "useFetchAPI() pour tous les appels API",
+    "baseUrl": "Configuration via nuxt.config.ts ou variable d'environnement",
+    "authentication": "Token Bearer automatique via localStorage",
+    "errorHandling": "Try-catch avec messages d'erreur utilisateur",
+    "logging": "Console.log en mode développement seulement"
+  },
+  "stateManagement": {
+    "stores": {
+      "structure": "defineStore avec state, actions, getters",
+      "persistence": "localStorage pour auth, session pour autres",
+      "naming": "camelCase avec 'Store' suffix"
+    },
+    "composables": {
+      "scope": "Logique métier spécifique (ex: useProjectManagement)",
+      "return": "Computed values et méthodes",
+      "state": "État local avec ref/reactive"
+    }
+  },
+  "uiPatterns": {
+    "colors": {
+      "primary": "blue-600/700 (actions principales)",
+      "success": "green-400/800 (messages de succès)",
+      "error": "red-400/800 (messages d'erreur)",
+      "warning": "yellow-400/800 (avertissements)",
+      "neutral": "gray-400/900 (texte, bordures)"
+    },
+    "components": {
+      "buttons": {
+        "primary": "bg-blue-600 hover:bg-blue-700 text-white",
+        "secondary": "border border-gray-300 text-gray-700 hover:bg-gray-50",
+        "danger": "border border-red-300 text-red-700 hover:bg-red-50"
+      },
+      "messages": {
+        "success": "bg-green-50 border-green-200 text-green-800",
+        "error": "bg-red-50 border-red-200 text-red-800",
+        "structure": "Flex avec icône + texte + bouton fermeture"
+      },
+      "modals": {
+        "backdrop": "fixed inset-0 bg-gray-600 bg-opacity-50",
+        "container": "bg-white rounded-lg shadow-xl",
+        "structure": "Header + Body + Footer"
+      }
+    },
+    "layout": {
+      "spacing": "Utiliser les classes Tailwind (p-4, m-6, space-y-4)",
+      "responsive": "Toujours mobile-first (sm:, md:, lg:)",
+      "grid": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+    }
+  },
+  "authentication": {
+    "middleware": "auth.js pour les pages protégées",
+    "store": "authStore.js centralise la logique d'auth",
+    "tokens": "accessToken + refreshToken dans localStorage",
+    "pageProtection": "definePageMeta({ middleware: 'auth' })"
+  },
+  "errorHandling": {
+    "api": {
+      "structure": "try-catch avec gestion spécifique des codes d'erreur",
+      "userMessages": "Messages d'erreur traduits et compréhensibles",
+      "logging": "console.error en développement"
+    },
+    "ui": {
+      "states": "Loading, error, success, empty states",
+      "fallbacks": "Toujours prévoir des états de fallback"
+    }
+  },
+  "dataFlow": {
+    "pattern": "Props down, Events up",
+    "forms": {
+      "structure": "reactive form object",
+      "validation": "validateProject(), validateUser(), etc.",
+      "submission": "async avec loading states"
+    },
+    "lists": {
+      "loading": "skeleton ou spinner",
+      "empty": "message informatif avec action",
+      "pagination": "si nécessaire"
+    }
+  },
+  "performance": {
+    "imports": "Lazy loading pour les composants lourds",
+    "api": "Éviter les appels redondants",
+    "reactivity": "computed() pour les valeurs dérivées",
+    "watchers": "watch() pour les effets de bord"
+  },
+  "accessibility": {
+    "semantic": "Utiliser les bonnes balises HTML",
+    "aria": "aria-label, aria-describedby pour les éléments complexes",
+    "keyboard": "Navigation au clavier supportée",
+    "focus": "États de focus visibles"
+  },
+  "development": {
+    "console": {
+      "development": "console.log avec emojis pour catégoriser (🟢 succès, ❌ erreur, 🔄 chargement)",
+      "production": "Pas de console.log"
+    },
+    "comments": {
+      "structure": "// Section principale",
+      "explanation": "Expliquer le 'pourquoi', pas le 'quoi'",
+      "todos": "// TODO: Description claire"
+    },
+    "testing": "Prévoir des data-testid pour les tests futurs"
+  },
+  "crudOperations": {
+    "pattern": "Composable + Modal + Liste",
+    "composable": {
+      "methods": "fetch, create, update, delete + validation",
+      "states": "loading, error, success, data",
+      "naming": "fetchProjects, createProject, updateProject, deleteProject"
+    },
+    "modals": {
+      "create": "ComponentCreateModal.vue",
+      "edit": "ComponentEditModal.vue", 
+      "delete": "ComponentDeleteModal.vue"
+    },
+    "forms": {
+      "validation": "validateComponent() method",
+      "submission": "handleSubmit() avec loading state",
+      "reset": "Réinitialiser après succès"
+    }
+  },
+  "routing": {
+    "structure": "pages/ reflète l'URL",
+    "dynamic": "[id].vue pour les paramètres",
+    "protection": "middleware: 'auth' pour les pages protégées",
+    "navigation": "navigateTo() pour la navigation programmatique"
+  },
+  "bestPractices": {
+    "composition": "Préférer Composition API à Options API",
+    "reactivity": "ref() pour primitives, reactive() pour objets",
+    "computed": "Pour les valeurs dérivées complexes",
+    "watchers": "Seulement pour les effets de bord",
+    "lifecycle": "onMounted(), onUnmounted() dans composables",
+    "emit": "Définir les events avec defineEmits",
+    "props": "Typer avec defineProps",
+    "slots": "Utiliser pour le contenu dynamique"
+  },
+  "conventions": {
+    "endpoints": {
+      "list": "GET /api/resource/list/",
+      "detail": "GET /api/resource/detail/{id}/",
+      "create": "POST /api/resource/create/",
+      "update": "PUT /api/resource/update/{id}/",
+      "delete": "DELETE /api/resource/delete/{id}/",
+      "byRole": "GET /api/users/detail/by-role/{role}/"
+    },
+    "responseFormat": {
+      "success": "{ success: true, data: object/array }",
+      "error": "{ success: false, error: string, details?: object }"
+    }
+  }
+}
