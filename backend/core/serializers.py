@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Projet, SousProjet
+from .models import Projet, SousProjet, ActiviteGenerale
 from users.models import User
 
 
@@ -44,6 +44,12 @@ class UserChefProjetSerializer(serializers.ModelSerializer):
 
 
 class UserIngenieurTravauxSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "name", "surname", "role")
+
+
+class UserQualiticientSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "name", "surname", "role")
@@ -95,3 +101,28 @@ class SousProjetSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("L'utilisateur doit avoir le rôle 'ingenieur travaux'.")
         return value
 
+
+class ActiviteGeneraleSerializer(serializers.ModelSerializer):
+    # écriture : accepter plusieurs qualiticiens (PK) mais uniquement ceux avec le bon rôle
+    qualiticient = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.filter(role='qualiticient'),
+        many=True,
+        required=False,
+        allow_empty=True
+    )
+    # lecture : détails imbriqués des qualiticiens
+    qualiticient_details = UserQualiticientSerializer(source='qualiticient', many=True, read_only=True)
+
+    # si tu veux conserver la version détaillée du sous-projet en lecture :
+    sous_projet_details = SousProjetSerializer(source='sous_projet', read_only=True)
+
+    class Meta:
+        model = ActiviteGenerale
+        fields = "__all__"
+
+    def validate_qualiticient(self, value):
+        # double-check côté serveur
+        for u in value:
+            if u.role != 'qualiticient':
+                raise serializers.ValidationError("Tous les utilisateurs doivent avoir le rôle 'qualiticient'.")
+        return value

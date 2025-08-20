@@ -1,7 +1,7 @@
 from rest_framework import generics
-from .serializers import ProjetSerializer, SousProjetSerializer
+from .serializers import ProjetSerializer, SousProjetSerializer,ActiviteGeneraleSerializer
 from users.models import User
-from .models import Projet, SousProjet
+from .models import Projet, SousProjet, ActiviteGenerale
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -75,3 +75,36 @@ class SousProjetDeleteView(generics.DestroyAPIView):
     queryset = SousProjet.objects.all()
     serializer_class = SousProjetSerializer
     permission_classes = [IsAuthenticated]    
+
+
+# ActiviteGenerale Views
+
+class ActiviteGeneraleListView(generics.ListAPIView):
+    queryset = ActiviteGenerale.objects.all()
+    serializer_class = ActiviteGeneraleSerializer
+    permission_classes = [IsAuthenticated]    
+
+
+class ActiviteGeneraleDetailView(generics.RetrieveAPIView):
+    queryset = ActiviteGenerale.objects.all()
+    serializer_class = ActiviteGeneraleSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class ActiviteGeneraleCreateView(generics.CreateAPIView):
+    queryset = ActiviteGenerale.objects.all()
+    serializer_class = ActiviteGeneraleSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class ActiviteGeneraleUpdateView(generics.UpdateAPIView):
+    queryset = ActiviteGenerale.objects.all()
+    serializer_class = ActiviteGeneraleSerializer
+    permission_classes = [IsAuthenticated]
+
+
+
+class ActiviteGeneraleDeleteView(generics.DestroyAPIView):
+    queryset = ActiviteGenerale.objects.all()
+    serializer_class = ActiviteGeneraleSerializer
+    permission_classes = [IsAuthenticated]                

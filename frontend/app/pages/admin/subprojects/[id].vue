@@ -210,122 +210,25 @@
           </div>
         </div>
 
-        <!-- Informations du projet parent -->
+        <!-- Activités générales -->
         <div v-if="currentSousProjet.projet_details" class="bg-white shadow rounded-lg">
           <div class="px-6 py-5 border-b border-gray-200">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">
-              Informations du projet parent
-            </h3>
-            <p class="mt-1 text-sm text-gray-500">
-              Détails du projet auquel appartient ce sous-projet
-            </p>
-          </div>
-          <div class="px-6 py-5">
-            <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-              <div>
-                <dt class="text-sm font-medium text-gray-500">Titre du projet</dt>
-                <dd class="mt-1">
-                  <button 
-                    @click="navigateTo(`/admin/projets/${currentSousProjet.projet}`)"
-                    class="text-sm text-blue-600 hover:text-blue-900 font-medium underline"
-                  >
-                    {{ currentSousProjet.projet_details.titre }}
-                  </button>
-                </dd>
-              </div>
-              
-              <div v-if="currentSousProjet.projet_details.client">
-                <dt class="text-sm font-medium text-gray-500">Client</dt>
-                <dd class="mt-1 text-sm text-gray-900">{{ currentSousProjet.projet_details.client }}</dd>
-              </div>
-              
-              <div v-if="currentSousProjet.projet_details.Emplacement">
-                <dt class="text-sm font-medium text-gray-500">Emplacement</dt>
-                <dd class="mt-1 text-sm text-gray-900">{{ currentSousProjet.projet_details.Emplacement }}</dd>
-              </div>
-              
-              <div v-if="currentSousProjet.projet_details.Reference_affaire">
-                <dt class="text-sm font-medium text-gray-500">Référence affaire</dt>
-                <dd class="mt-1 text-sm text-gray-900">{{ currentSousProjet.projet_details.Reference_affaire }}</dd>
-              </div>
-              
-              <div v-if="currentSousProjet.projet_details.coordonnateur_details">
-                <dt class="text-sm font-medium text-gray-500">Coordinateur projet</dt>
-                <dd class="mt-1 text-sm text-gray-900">
-                  {{ currentSousProjet.projet_details.coordonnateur_details.name }} 
-                  {{ currentSousProjet.projet_details.coordonnateur_details.surname }}
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-
-        <!-- Actions supplémentaires -->
-        <div class="bg-white shadow rounded-lg">
-          <div class="px-6 py-5 border-b border-gray-200">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">
-              Actions
-            </h3>
-            <p class="mt-1 text-sm text-gray-500">
-              Actions disponibles pour ce sous-projet
-            </p>
-          </div>
-          <div class="px-6 py-5">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <!-- Action: Modifier -->
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg leading-6 font-medium text-gray-900">
+                Activités générales
+              </h3>
               <button 
-                @click="handleEditSousProjet"
-                class="flex flex-col items-center p-6 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors group"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-3 group-hover:bg-blue-200">
-                  <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                  </svg>
-                </div>
-                <span class="text-sm font-medium text-gray-900 group-hover:text-gray-700">
-                  Modifier
-                </span>
-                <span class="text-xs text-gray-500 mt-1 text-center">
-                  Modifier les informations
-                </span>
-              </button>
-
-              <!-- Action: Voir le projet parent -->
-              <button 
-                @click="navigateTo(`/admin/projets/${currentSousProjet.projet}`)"
-                class="flex flex-col items-center p-6 bg-green-50 rounded-lg hover:bg-green-100 transition-colors group"
-              >
-                <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mb-3 group-hover:bg-green-200">
-                  <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
-                  </svg>
-                </div>
-                <span class="text-sm font-medium text-gray-900 group-hover:text-gray-700">
-                  Projet parent
-                </span>
-                <span class="text-xs text-gray-500 mt-1 text-center">
-                  Voir le projet principal
-                </span>
-              </button>
-
-              <!-- Action: Supprimer -->
-              <button 
-                @click="handleDeleteSousProjet"
-                class="flex flex-col items-center p-6 bg-red-50 rounded-lg hover:bg-red-100 transition-colors group"
-              >
-                <div class="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center mb-3 group-hover:bg-red-200">
-                  <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                  </svg>
-                </div>
-                <span class="text-sm font-medium text-gray-900 group-hover:text-gray-700">
-                  Supprimer
-                </span>
-                <span class="text-xs text-gray-500 mt-1 text-center">
-                  Supprimer définitivement
-                </span>
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Créer une activité générale
               </button>
             </div>
+          </div>
+          <div class="px-6 py-5">
+            <!-- Contenu vide pour l'instant -->
           </div>
         </div>
       </div>

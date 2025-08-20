@@ -1,6 +1,6 @@
 from django.urls import path
 from users.views import UserCreateView, UserDetailView, RoleUserListView, UserListView, UserCreateByAdminView, ChangePasswordView, CustomTokenObtainPairView,AddPictureView, UserDetailRoleView
-from core.views import ProjetCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView, SousProjetCreateView, SousProjetListView, SousProjetDetailView, SousProjetUpdateView, SousProjetDeleteView      
+from core.views import ProjetCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView, SousProjetCreateView, SousProjetListView, SousProjetDetailView, SousProjetUpdateView, SousProjetDeleteView, ActiviteGeneraleCreateView,ActiviteGeneraleListView, ActiviteGeneraleDetailView, ActiviteGeneraleUpdateView, ActiviteGeneraleDeleteView      
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -21,7 +21,7 @@ urlpatterns = [
     path('update-picture/', AddPictureView.as_view(), name='update-picture'),
 
 
-    # Core API URLs
+    ### Core API URLs ###
 
     # Project URLs
     path('projects/create/', ProjetCreateView.as_view(), name='project-create'),
@@ -39,4 +39,10 @@ urlpatterns = [
     path('sous-projects/delete/<int:pk>/', SousProjetDeleteView.as_view(), name='sous-project-delete'),
 
     
+    # ActiviteGenerale URLs
+    path('activite-generale/create/', ActiviteGeneraleCreateView.as_view(), name='activite-generale-create'),
+    path('activite-generale/list/', ActiviteGeneraleListView.as_view(), name='activite-generale-list'),
+    path('activite-generale/detail/<int:pk>/', ActiviteGeneraleDetailView.as_view(), name='activite-generale-detail'),
+    path('activite-generale/update/<int:pk>/', ActiviteGeneraleUpdateView.as_view(), name='activite-generale-update'),
+    path('activite-generale/delete/<int:pk>/', ActiviteGeneraleDeleteView.as_view(), name='activite-generale-delete'),
 ]
