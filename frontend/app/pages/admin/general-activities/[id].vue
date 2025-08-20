@@ -226,7 +226,105 @@
             </div>
           </div>
           <div class="px-6 py-5">
-            <!-- Contenu vide pour le moment -->
+            <!-- Messages pour les activités spécifiques -->
+            <div v-if="activiteSpecifiqueSuccess" class="mb-4 bg-green-50 border border-green-200 rounded-md p-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <p class="text-sm font-medium text-green-800">{{ activiteSpecifiqueSuccess }}</p>
+                </div>
+                <div class="ml-auto pl-3">
+                  <button @click="clearActiviteSpecifiqueMessages" type="button" class="inline-flex bg-green-50 rounded-md p-1.5 text-green-500 hover:bg-green-100">
+                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="activiteSpecifiqueError" class="mb-4 bg-red-50 border border-red-200 rounded-md p-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <p class="text-sm font-medium text-red-800">{{ activiteSpecifiqueError }}</p>
+                </div>
+                <div class="ml-auto pl-3">
+                  <button @click="clearActiviteSpecifiqueMessages" type="button" class="inline-flex bg-red-50 rounded-md p-1.5 text-red-500 hover:bg-red-100">
+                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Loading state pour les activités spécifiques -->
+            <div v-if="activiteSpecifiqueLoading" class="flex items-center justify-center py-8">
+              <svg class="animate-spin h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span class="ml-2 text-gray-600">Chargement des activités spécifiques...</span>
+            </div>
+
+            <!-- Empty state pour les activités spécifiques -->
+            <div v-else-if="activitesSpecifiques.length === 0" class="text-center py-8">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+              </svg>
+              <h3 class="mt-2 text-sm font-medium text-gray-900">Aucune activité spécifique</h3>
+              <p class="mt-1 text-sm text-gray-500">Commencez par créer votre première activité spécifique.</p>
+            </div>
+
+            <!-- Liste des activités spécifiques -->
+            <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div 
+                v-for="activiteSpecifique in activitesSpecifiques" 
+                :key="activiteSpecifique.id"
+                class="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow relative group"
+              >
+                <!-- Actions icons -->
+                <div class="absolute top-3 right-3 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
+                    @click="handleEditActiviteSpecifique(activiteSpecifique)"
+                    class="p-1 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
+                    title="Modifier"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                  </button>
+                  <button 
+                    @click="handleDeleteActiviteSpecifique(activiteSpecifique)"
+                    class="p-1 rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
+                    title="Supprimer"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Contenu de l'activité spécifique -->
+                <div class="pr-16">
+                  <h4 class="text-lg font-semibold text-gray-900 mb-2">{{ activiteSpecifique.titre }}</h4>
+                  <div class="text-sm text-gray-600">
+                    <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                      Activité spécifique
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -265,13 +363,42 @@
       @close="closeDeleteModal"
       @deleted="handleActiviteGeneraleDeleted"
     />
+
+    <!-- Modal de création d'activité spécifique -->
+    <ActiviteSpecifiqueCreateModal
+      :is-open="isActiviteSpecifiqueModalOpen"
+      :activite-generale-id="currentActiviteGenerale?.id"
+      @close="closeActiviteSpecifiqueModal"
+      @created="handleActiviteSpecifiqueCreated"
+    />
+
+    <!-- Modal de modification d'activité spécifique -->
+    <ActiviteSpecifiqueEditModal
+      :is-open="isEditActiviteSpecifiqueModalOpen"
+      :activite-specifique="selectedActiviteSpecifique"
+      :activite-generale-id="currentActiviteGenerale?.id"
+      @close="closeEditActiviteSpecifiqueModal"
+      @updated="handleActiviteSpecifiqueUpdated"
+    />
+
+    <!-- Modal de suppression d'activité spécifique -->
+    <ActiviteSpecifiqueDeleteModal
+      :is-open="isDeleteActiviteSpecifiqueModalOpen"
+      :activite-specifique="selectedActiviteSpecifique"
+      @close="closeDeleteActiviteSpecifiqueModal"
+      @deleted="handleActiviteSpecifiqueDeleted"
+    />
   </div>
 </template>
 
 <script setup>
 import { useActiviteGeneraleManagement } from '~/composables/useActiviteGeneraleManagement'
+import { useActiviteSpecifiqueManagement } from '~/composables/useActiviteSpecifiqueManagement'
 import ActiviteGeneraleEditModal from '~/components/ActiviteGeneraleEditModal.vue'
 import ActiviteGeneraleDeleteModal from '~/components/ActiviteGeneraleDeleteModal.vue'
+import ActiviteSpecifiqueCreateModal from '~/components/ActiviteSpecifiqueCreateModal.vue'
+import ActiviteSpecifiqueEditModal from '~/components/ActiviteSpecifiqueEditModal.vue'
+import ActiviteSpecifiqueDeleteModal from '~/components/ActiviteSpecifiqueDeleteModal.vue'
 
 // Middleware d'authentification
 definePageMeta({
@@ -297,9 +424,25 @@ const {
   clearMessages
 } = useActiviteGeneraleManagement()
 
+// Composable pour la gestion des activités spécifiques
+const {
+  activitesSpecifiques,
+  activiteSpecifiqueLoading,
+  error: activiteSpecifiqueError,
+  success: activiteSpecifiqueSuccess,
+  fetchActivitesSpecifiques,
+  clearMessages: clearActiviteSpecifiqueMessages
+} = useActiviteSpecifiqueManagement()
+
 // État des modals
 const isEditModalOpen = ref(false)
 const isDeleteModalOpen = ref(false)
+const isActiviteSpecifiqueModalOpen = ref(false)
+const isEditActiviteSpecifiqueModalOpen = ref(false)
+const isDeleteActiviteSpecifiqueModalOpen = ref(false)
+
+// Activité spécifique sélectionnée pour les actions
+const selectedActiviteSpecifique = ref(null)
 
 // Charger l'activité générale
 const loadActiviteGenerale = async () => {
@@ -309,6 +452,8 @@ const loadActiviteGenerale = async () => {
   const result = await fetchActiviteGenerale(activiteGeneraleId)
   if (result.success && currentActiviteGenerale.value) {
     pageTitle.value = `${currentActiviteGenerale.value.titre} - Détails`
+    // Charger les activités spécifiques après avoir chargé l'activité générale
+    await loadActivitesSpecifiques()
   }
 }
 
@@ -378,6 +523,82 @@ const handleActiviteGeneraleDeleted = (deletedActiviteGenerale) => {
     navigateTo(`/admin/subprojects/${currentActiviteGenerale.value.sous_projet}`)
   } else {
     navigateTo('/admin')
+  }
+}
+
+// Handlers pour les activités spécifiques
+const handleCreateActiviteSpecifique = () => {
+  isActiviteSpecifiqueModalOpen.value = true
+  
+  if (import.meta.dev) {
+    console.log('🔄 Ouverture modal création activité spécifique pour activité générale:', currentActiviteGenerale.value?.titre)
+  }
+}
+
+const closeActiviteSpecifiqueModal = () => {
+  isActiviteSpecifiqueModalOpen.value = false
+}
+
+const handleActiviteSpecifiqueCreated = async (newActiviteSpecifique) => {
+  if (import.meta.dev) {
+    console.log('🟢 Activité spécifique créée:', newActiviteSpecifique.titre)
+  }
+  
+  // Recharger les activités spécifiques
+  await loadActivitesSpecifiques()
+}
+
+// Handlers pour les actions sur les activités spécifiques
+const handleEditActiviteSpecifique = (activiteSpecifique) => {
+  selectedActiviteSpecifique.value = activiteSpecifique
+  isEditActiviteSpecifiqueModalOpen.value = true
+  
+  if (import.meta.dev) {
+    console.log('🔄 Ouverture modal édition activité spécifique:', activiteSpecifique.titre)
+  }
+}
+
+const closeEditActiviteSpecifiqueModal = () => {
+  isEditActiviteSpecifiqueModalOpen.value = false
+  selectedActiviteSpecifique.value = null
+}
+
+const handleActiviteSpecifiqueUpdated = async (updatedActiviteSpecifique) => {
+  if (import.meta.dev) {
+    console.log('🟢 Activité spécifique modifiée:', updatedActiviteSpecifique.titre)
+  }
+  
+  // Recharger les activités spécifiques
+  await loadActivitesSpecifiques()
+}
+
+const handleDeleteActiviteSpecifique = (activiteSpecifique) => {
+  selectedActiviteSpecifique.value = activiteSpecifique
+  isDeleteActiviteSpecifiqueModalOpen.value = true
+  
+  if (import.meta.dev) {
+    console.log('🗑️ Ouverture modal suppression activité spécifique:', activiteSpecifique.titre)
+  }
+}
+
+const closeDeleteActiviteSpecifiqueModal = () => {
+  isDeleteActiviteSpecifiqueModalOpen.value = false
+  selectedActiviteSpecifique.value = null
+}
+
+const handleActiviteSpecifiqueDeleted = async (deletedActiviteSpecifique) => {
+  if (import.meta.dev) {
+    console.log('🟢 Activité spécifique supprimée:', deletedActiviteSpecifique.titre)
+  }
+  
+  // Recharger les activités spécifiques
+  await loadActivitesSpecifiques()
+}
+
+// Charger les activités spécifiques
+const loadActivitesSpecifiques = async () => {
+  if (currentActiviteGenerale.value?.id) {
+    await fetchActivitesSpecifiques(currentActiviteGenerale.value.id)
   }
 }
 
