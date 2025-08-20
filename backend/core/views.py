@@ -1,7 +1,7 @@
 from rest_framework import generics
-from .serializers import ProjetSerializer, SousProjetSerializer,ActiviteGeneraleSerializer
+from .serializers import ProjetSerializer, SousProjetSerializer,ActiviteGeneraleSerializer, ActiviteSpecifiqueSerializer
 from users.models import User
-from .models import Projet, SousProjet, ActiviteGenerale
+from .models import Projet, SousProjet, ActiviteGenerale, ActiviteSpecifique
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -108,3 +108,34 @@ class ActiviteGeneraleDeleteView(generics.DestroyAPIView):
     queryset = ActiviteGenerale.objects.all()
     serializer_class = ActiviteGeneraleSerializer
     permission_classes = [IsAuthenticated]                
+
+
+
+# ActiviteSpecifique Views
+
+class ActiviteSpecifiqueCreateView(generics.CreateAPIView):
+    queryset = ActiviteSpecifique.objects.all()
+    serializer_class = ActiviteSpecifiqueSerializer
+    permission_classes = [IsAuthenticated]    
+
+
+class ActiviteSpecifiqueListView(generics.ListAPIView):
+    queryset = ActiviteSpecifique.objects.all()
+    serializer_class = ActiviteSpecifiqueSerializer
+    permission_classes = [IsAuthenticated]  
+
+class ActiviteSpecifiqueDetailsView(generics.RetrieveAPIView):
+    queryset = ActiviteSpecifique.objects.all()
+    serializer_class = ActiviteSpecifiqueSerializer
+    permission_classes = [IsAuthenticated]      
+
+class ActiviteSpecifiqueUpdateView(generics.UpdateAPIView):
+    queryset = ActiviteSpecifique.objects.all()
+    serializer_class = ActiviteSpecifiqueSerializer
+    permission_classes = [IsAuthenticated]    
+
+
+class ActiviteSpecifiqueDeleteView(generics.DestroyAPIView):
+    queryset = ActiviteSpecifique.objects.all()
+    serializer_class = ActiviteSpecifiqueSerializer
+    permission_classes = [IsAuthenticated]

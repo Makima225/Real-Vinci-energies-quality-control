@@ -293,12 +293,13 @@
               <div 
                 v-for="activiteGenerale in activitesGenerales" 
                 :key="activiteGenerale.id"
-                class="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow relative group"
+                @click="handleActiviteGeneraleClick(activiteGenerale)"
+                class="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer relative group"
               >
                 <!-- Actions icons -->
                 <div class="absolute top-3 right-3 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button 
-                    @click="handleEditActiviteGenerale(activiteGenerale)"
+                    @click.stop="handleEditActiviteGenerale(activiteGenerale)"
                     class="p-1 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
                     title="Modifier"
                   >
@@ -307,7 +308,7 @@
                     </svg>
                   </button>
                   <button 
-                    @click="handleDeleteActiviteGenerale(activiteGenerale)"
+                    @click.stop="handleDeleteActiviteGenerale(activiteGenerale)"
                     class="p-1 rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
                     title="Supprimer"
                   >
@@ -547,6 +548,16 @@ const handleCreateActiviteGenerale = () => {
 
 const closeActiviteGeneraleModal = () => {
   isActiviteGeneraleModalOpen.value = false
+}
+
+// Handler pour le clic sur une carte d'activité générale
+const handleActiviteGeneraleClick = (activiteGenerale) => {
+  // Naviguer vers la page de détails de l'activité générale
+  navigateTo(`/admin/general-activities/${activiteGenerale.id}`)
+  
+  if (import.meta.dev) {
+    console.log('🔗 Navigation vers activité générale:', activiteGenerale.titre)
+  }
 }
 
 const handleActiviteGeneraleCreated = async (newActiviteGenerale) => {

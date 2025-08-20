@@ -1,6 +1,6 @@
 from django.urls import path
 from users.views import UserCreateView, UserDetailView, RoleUserListView, UserListView, UserCreateByAdminView, ChangePasswordView, CustomTokenObtainPairView,AddPictureView, UserDetailRoleView
-from core.views import ProjetCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView, SousProjetCreateView, SousProjetListView, SousProjetDetailView, SousProjetUpdateView, SousProjetDeleteView, ActiviteGeneraleCreateView,ActiviteGeneraleListView, ActiviteGeneraleDetailView, ActiviteGeneraleUpdateView, ActiviteGeneraleDeleteView      
+from core.views import ProjetCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView, SousProjetCreateView, SousProjetListView, SousProjetDetailView, SousProjetUpdateView, SousProjetDeleteView, ActiviteGeneraleCreateView,ActiviteGeneraleListView, ActiviteGeneraleDetailView, ActiviteGeneraleUpdateView, ActiviteGeneraleDeleteView, ActiviteSpecifiqueCreateView, ActiviteSpecifiqueListView, ActiviteSpecifiqueDetailsView, ActiviteSpecifiqueUpdateView, ActiviteSpecifiqueDeleteView      
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -45,4 +45,12 @@ urlpatterns = [
     path('activite-generale/detail/<int:pk>/', ActiviteGeneraleDetailView.as_view(), name='activite-generale-detail'),
     path('activite-generale/update/<int:pk>/', ActiviteGeneraleUpdateView.as_view(), name='activite-generale-update'),
     path('activite-generale/delete/<int:pk>/', ActiviteGeneraleDeleteView.as_view(), name='activite-generale-delete'),
+
+
+    # ActiviteSpecifique URLs
+    path('activite-specifique/create/', ActiviteSpecifiqueCreateView.as_view(), name='activite-specifique-create'),
+    path('activite-specifique/list/', ActiviteSpecifiqueListView.as_view(), name='activite-specifique-list'),
+    path('activite-specifique/detail/<int:pk>/', ActiviteSpecifiqueDetailsView.as_view(), name='activite-specifique-detail'),
+    path('activite-specifique/update/<int:pk>/', ActiviteSpecifiqueUpdateView.as_view(), name='activite-specifique-update'),
+    path('activite-specifique/delete/<int:pk>/', ActiviteSpecifiqueDeleteView.as_view(), name='activite-specifique-delete'),
 ]

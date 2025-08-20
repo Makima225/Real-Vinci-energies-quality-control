@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Projet, SousProjet, ActiviteGenerale
+from .models import Projet, SousProjet, ActiviteGenerale, ActiviteSpecifique
 from users.models import User
 
 
@@ -126,3 +126,9 @@ class ActiviteGeneraleSerializer(serializers.ModelSerializer):
             if u.role != 'qualiticient':
                 raise serializers.ValidationError("Tous les utilisateurs doivent avoir le rôle 'qualiticient'.")
         return value
+    
+
+class ActiviteSpecifiqueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActiviteSpecifique
+        fields = ['id', 'titre', 'activite_generale']    
