@@ -56,7 +56,7 @@ class ActiviteGenerale(models.Model):
         # Validation pour s'assurer que les utilisateurs ont le rôle de qualiticien
         for user in self.qualiticient.all():
             if user.role != 'qualiticient':
-                raise ValidationError(f"L'utilisateur {user.email} doit avoir le rôle de qualiticient.")
+                raise ValidationError(f"L'utilisateur {user.email} doit avoir le rôle de qualiticien.")
     
 
 class ActiviteSpecifique(models.Model):
@@ -77,12 +77,11 @@ class PlanReference(models.Model):
 
 class Entete(models.Model):
     titre = models.CharField(max_length=100)
-    activite_specifique = models.ForeignKey(ActiviteSpecifique, on_delete=models.CASCADE)
+    # rendre temporairement nullable pour migration sûre
+    fiche_controle = models.ForeignKey('FicheControle', on_delete=models.CASCADE, related_name='entetes', null=True, blank=True)
 
     def __str__(self):
         return self.titre
-    
-
     
 
 class CorpsEtat(models.Model):
@@ -139,7 +138,6 @@ class ChampControle(models.Model):
 class Controle(models.Model):
     corps_etat = models.ForeignKey(CorpsEtat, on_delete=models.CASCADE)
    
-    
     @property
     def titre(self):
         return self.corps_etat.titre
@@ -147,10 +145,26 @@ class Controle(models.Model):
     def __str__(self):
         return f"{self.titre}"
 
-   
+# Nouveau modèle pour permettre plusieurs occurrences du même controle sur une fiche
+class FicheControleItem(models.Model):
+    fiche = models.ForeignKey('FicheControle', on_delete=models.CASCADE, related_name='controle_items')
+    controle = models.ForeignKey(Controle, on_delete=models.CASCADE, related_name='fiche_items')
+    ordre = models.PositiveIntegerField(default=0)
+    label = models.CharField(max_length=200, blank=True, null=True)
+    quantite = models.IntegerField(default=1)
+    methode_remplissage = models.CharField(max_length=200, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['ordre', 'id']
+        # pas d'unicité fiche+controle pour permettre répétitions
 
+    def __str__(self):
+        return f"{self.fiche.titre} - {self.controle.titre} ({self.label or 'occurrence'})"
+
+# Modifier FicheControle pour utiliser le through (ou tu peux garder l'ancien champ et l'utiliser pour compat)
 class FicheControle(models.Model):
+    titre = models.CharField(max_length=200, null=True, blank=True)  # nouveau : nom de la fiche de contrôle
     ETAT_DE_LA_FICHE = [
          ('Remplis', 'Remplis'),
          ('Validé', 'Validé'),
@@ -158,7 +172,7 @@ class FicheControle(models.Model):
 
     activite_specifique = models.ForeignKey(ActiviteSpecifique, on_delete=models.CASCADE)
     activite_generale = models.ForeignKey(ActiviteGenerale, on_delete=models.CASCADE, null=True, blank=True)
-    controle = models.ManyToManyField(Controle)
+    controle = models.ManyToManyField(Controle, through='FicheControleItem', blank=True)
     quantite = models.IntegerField(default=1)
     quantitemod = models.IntegerField(default=0, editable=False)  # Nouveau champ
     quantite_remplie =  models.IntegerField(default=0) # Nouvelle quantité pour les contrôles remplis
@@ -175,9 +189,9 @@ class FicheControle(models.Model):
     signature_ingenieur_travaux = models.ImageField(upload_to='signatures/', null=True, blank=True)
 
     def clean(self):
-        # Vérifie que seul un qualiticient peut remplir la fiche
-        if self.qualiticient and self.qualiticient.role != 'qualiticient':
-            raise ValidationError("Seuls les qualiticients peuvent remplir une fiche de contrôle.")
+        # Vérifie que seul un qualiticien peut remplir la fiche
+        if self.qualiticient and self.qualiticient.role != 'qualiticien':
+            raise ValidationError("Seuls les qualiticiens peuvent remplir une fiche de contrôle.")
 
         # Vérifie que seul un ingénieur travaux peut valider une fiche
         if self.ingenieur_travaux and self.ingenieur_travaux.role != 'ingenieur travaux':
@@ -188,15 +202,18 @@ class FicheControle(models.Model):
         if self.activite_specifique and not self.activite_generale:
             self.activite_generale = self.activite_specifique.activite_generale
 
-        # Si l'objet est en cours de création, initialiser quantitemod avec la valeur de quantite
+        # Si aucun titre fourni, utiliser le titre de l'activité spécifique comme valeur par défaut
+        if not self.titre and self.activite_specifique:
+            self.titre = self.activite_specifique.titre
 
+        # Si l'objet est en cours de création, initialiser quantitemod avec la valeur de quantite
         if not self.pk:  # Vérifie si l'objet est en cours de création
             self.quantitemod = self.quantite
 
         super().save(*args, **kwargs)    
 
     def __str__(self):
-        return f"{self.activite_specifique.titre} " 
+        return f"{self.titre}"
     
 
 
@@ -260,10 +277,10 @@ class FicheRempli(models.Model):
         return f"Fiche remplie pour {self.fiche.activite_specifique.titre} - {self.date_remplissage} - {self.etat_de_la_fiche}"
     
 class EnteteValue(models.Model):
-    fiche_controle = models.ForeignKey(FicheControle, on_delete=models.CASCADE, null=True,  related_name="entete_values")
-    entete = models.ForeignKey(Entete, on_delete=models.CASCADE)
-    valeur = models.CharField(max_length=100, null=True, blank=True, )
-    
+    entete = models.ForeignKey(Entete, on_delete=models.CASCADE, related_name='values')
+    fiche_rempli = models.ForeignKey('FicheRempli', on_delete=models.CASCADE, related_name='entete_values', null=True, blank=True)
+    valeur = models.CharField(max_length=100, null=True, blank=True)
+
     def __str__(self):
         return f"{self.entete.titre}: {self.valeur}"   
 
@@ -279,7 +296,7 @@ class Anomalie(models.Model):
 
     fiche_rempli = models.ForeignKey(FicheRempli, related_name='anomalies', on_delete=models.CASCADE)
     controle = models.ForeignKey(Controle, on_delete=models.CASCADE)
-    qualiticient = models.ForeignKey(User, on_delete=models.CASCADE)  # Le qualiticien qui a signalé ET traite l'anomalie
+    qualiticien = models.ForeignKey(User, on_delete=models.CASCADE)  # Le qualiticien qui a signalé ET traite l'anomalie
     status = models.CharField(max_length=100, choices=STATUS, default='Detecter')
     delais = models.DateField(null=True, blank=True)  # Délai de résolution
     description = models.TextField()
@@ -320,7 +337,7 @@ class Anomalie(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Anomalie liée à {self.controle} par {self.qualiticient} - {self.date_signalement} {self.status}"
+        return f"Anomalie liée à {self.controle} par {self.qualiticien} - {self.date_signalement} {self.status}"
 
 
 class AnomalieResolu(models.Model):

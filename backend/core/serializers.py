@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Projet, SousProjet, ActiviteGenerale, ActiviteSpecifique
+from .models import Projet, SousProjet, ActiviteGenerale, ActiviteSpecifique, PlanReference
 from users.models import User
 
 
@@ -132,3 +132,9 @@ class ActiviteSpecifiqueSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActiviteSpecifique
         fields = ['id', 'titre', 'activite_generale']    
+
+
+class PlanReferenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlanReference
+        fields = ['id','nom', 'plan', 'activite_specifique']        

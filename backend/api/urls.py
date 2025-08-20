@@ -1,6 +1,6 @@
 from django.urls import path
 from users.views import UserCreateView, UserDetailView, RoleUserListView, UserListView, UserCreateByAdminView, ChangePasswordView, CustomTokenObtainPairView,AddPictureView, UserDetailRoleView
-from core.views import ProjetCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView, SousProjetCreateView, SousProjetListView, SousProjetDetailView, SousProjetUpdateView, SousProjetDeleteView, ActiviteGeneraleCreateView,ActiviteGeneraleListView, ActiviteGeneraleDetailView, ActiviteGeneraleUpdateView, ActiviteGeneraleDeleteView, ActiviteSpecifiqueCreateView, ActiviteSpecifiqueListView, ActiviteSpecifiqueDetailsView, ActiviteSpecifiqueUpdateView, ActiviteSpecifiqueDeleteView      
+from core.views import ProjetCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView, SousProjetCreateView, SousProjetListView, SousProjetDetailView, SousProjetUpdateView, SousProjetDeleteView, ActiviteGeneraleCreateView,ActiviteGeneraleListView, ActiviteGeneraleDetailView, ActiviteGeneraleUpdateView, ActiviteGeneraleDeleteView, ActiviteSpecifiqueCreateView, ActiviteSpecifiqueListView, ActiviteSpecifiqueDetailsView, ActiviteSpecifiqueUpdateView, ActiviteSpecifiqueDeleteView, PlanReferenceCreateView, PlanReferenceListView, PlanReferenceDetailView, PlanReferenceUpdateView, PlanReferenceDeleteView, PlanRefByActiviteSpecifiqueListView      
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -53,4 +53,13 @@ urlpatterns = [
     path('activite-specifique/detail/<int:pk>/', ActiviteSpecifiqueDetailsView.as_view(), name='activite-specifique-detail'),
     path('activite-specifique/update/<int:pk>/', ActiviteSpecifiqueUpdateView.as_view(), name='activite-specifique-update'),
     path('activite-specifique/delete/<int:pk>/', ActiviteSpecifiqueDeleteView.as_view(), name='activite-specifique-delete'),
+
+
+    # PlanReference URLs
+    path('plan-reference/create/', PlanReferenceCreateView.as_view(), name='plan-reference-create'),
+    path('plan-reference/list/', PlanReferenceListView.as_view(), name='plan-reference-list'),
+    path('planrefs/activite-specifique/<int:activite_specifique_id>/', PlanRefByActiviteSpecifiqueListView.as_view(), name='planrefs-by-activite-specifique'),
+    path('plan-reference/detail/<int:pk>/', PlanReferenceDetailView.as_view(), name='plan-reference-detail'),
+    path('plan-reference/update/<int:pk>/', PlanReferenceUpdateView.as_view(), name='plan-reference-update'),
+    path('plan-reference/delete/<int:pk>/', PlanReferenceDeleteView.as_view(), name='plan-reference-delete'),
 ]

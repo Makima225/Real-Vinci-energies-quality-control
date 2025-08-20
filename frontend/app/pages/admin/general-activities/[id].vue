@@ -290,12 +290,13 @@
               <div 
                 v-for="activiteSpecifique in activitesSpecifiques" 
                 :key="activiteSpecifique.id"
-                class="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow relative group"
+                @click="handleActiviteSpecifiqueClick(activiteSpecifique)"
+                class="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer relative group"
               >
                 <!-- Actions icons -->
                 <div class="absolute top-3 right-3 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button 
-                    @click="handleEditActiviteSpecifique(activiteSpecifique)"
+                    @click.stop="handleEditActiviteSpecifique(activiteSpecifique)"
                     class="p-1 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
                     title="Modifier"
                   >
@@ -304,7 +305,7 @@
                     </svg>
                   </button>
                   <button 
-                    @click="handleDeleteActiviteSpecifique(activiteSpecifique)"
+                    @click.stop="handleDeleteActiviteSpecifique(activiteSpecifique)"
                     class="p-1 rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
                     title="Supprimer"
                   >
@@ -537,6 +538,16 @@ const handleCreateActiviteSpecifique = () => {
 
 const closeActiviteSpecifiqueModal = () => {
   isActiviteSpecifiqueModalOpen.value = false
+}
+
+// Handler pour le clic sur une carte d'activité spécifique
+const handleActiviteSpecifiqueClick = (activiteSpecifique) => {
+  // Naviguer vers la page de détails de l'activité spécifique
+  navigateTo(`/admin/specific-activities/${activiteSpecifique.id}`)
+  
+  if (import.meta.dev) {
+    console.log('🔗 Navigation vers activité spécifique:', activiteSpecifique.titre)
+  }
 }
 
 const handleActiviteSpecifiqueCreated = async (newActiviteSpecifique) => {
